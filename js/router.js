@@ -82,24 +82,24 @@ const routes = {
             </aside>
 
             <section class="cards">
-                <div class="card">
+                <div class="card" onclick="window.history.pushState({}, '', '/pet'); window.route();">
                     <img src="./img/pet-teste.jpg" alt="Pet">
-                    <h3>Bob</h3>
+                    <h3>teste</h3>
                     <p>Disponível</p>
                 </div>
-                 <div class="card">
+                 <div class="card" onclick="window.history.pushState({}, '', '/pet'); window.route();">
                     <img src="./img/pet-teste.jpg" alt="Pet">
-                    <h3>Mel</h3>
+                    <h3>teste</h3>
                     <p>Disponível</p>
                 </div>
-                 <div class="card">
+                 <div class="card" onclick="window.history.pushState({}, '', '/pet'); window.route();">
                     <img src="./img/pet-teste.jpg" alt="Pet">
-                    <h3>Thor</h3>
+                    <h3>teste</h3>
                     <p>Disponível</p>
                 </div>
-                 <div class="card">
+                 <div class="card" onclick="window.history.pushState({}, '', '/pet'); window.route();">
                     <img src="./img/pet-teste.jpg" alt="Pet">
-                    <h3>Luna</h3>
+                    <h3>teste</h3>
                     <p>Disponível</p>
                 </div>
             </section>
@@ -128,16 +128,125 @@ const routes = {
         }
     },
     "/favoritos": {
-        title: "MEUS FAVORITOS",
-        template: `<h2>Em breve: Seus favoritos</h2>`
+        title: "FAVORITOS",
+        template: `
+            <div class="favoritos-container">
+                <section class="cards">
+                    <div class="card">
+                        <img src="./img/pet-teste.jpg" alt="Pet">
+                        <h3>Rex</h3>
+                        <p>Disponível</p>
+                    </div>
+                    <div class="card">
+                        <img src="./img/pet-teste.jpg" alt="Pet">
+                        <h3>Bolinha</h3>
+                        <p>Disponível</p>
+                    </div>
+                    <div class="card">
+                        <img src="./img/pet-teste.jpg" alt="Pet">
+                        <h3>Thor</h3>
+                        <p>Disponível</p>
+                    </div>
+                     <div class="card">
+                        <img src="./img/pet-teste.jpg" alt="Pet">
+                        <h3>Jade</h3>
+                        <p>Disponível</p>
+                    </div>
+                </section>
+            </div>
+        `
     },
     "/notificacoes": {
         title: "NOTIFICAÇÕES",
-        template: `<h2>Em breve: Notificações</h2>`
+        template: `
+            <div class="notificacoes-wrapper">
+                <div class="notificacoes-container">
+                    
+                    <div class="notificacao-card">
+                        <span class="card-titulo">PEDIDO DE ADOÇÃO</span>
+                        <a href="/detalhes-pedido" class="spa-link botao">VER DETALHES</a>
+                    </div>
+
+                    <div class="notificacao-card">
+                        <span class="card-titulo">RETORNO DO PEDIDO</span>
+                        <a href="/detalhes-pedido" class="spa-link botao">VER DETALHES</a>
+                    </div>
+
+                    <div class="notificacao-card">
+                        <span class="card-titulo">RETORNO DO PEDIDO</span>
+                        <a href="/detalhes-pedido" class="spa-link botao">VER DETALHES</a>
+                    </div>
+
+                </div>
+            </div>
+        `
     },
     "/perfil": {
         title: "MEU PERFIL",
-        template: `<h2>Em breve: Perfil</h2>`
+        template: `
+            <div class="perfil-container">
+                <div class="perfil-section">
+                    <div class="photo-upload">
+                        <div class="upload-icon">
+                            <i class="bi bi-cloud-upload-fill"></i>
+                        </div>
+                        <!-- Input oculto para funcionar o clique -->
+                        <input type="file" id="file-input-perfil" style="display: none;" accept="image/*">
+                    </div>
+
+                    <div class="container-dados">
+                        <input type="text" placeholder="Nome" class="input-padrao">
+                        <input type="text" placeholder="CEP" class="input-padrao">
+                        
+                        <input type="date" placeholder="Idade" class="input-padrao">
+                        <input type="email" placeholder="Email" class="input-padrao">
+                        
+                        <input type="tel" placeholder="Telefone" class="input-padrao">
+                        <input type="text" placeholder="Preferencia de pet" class="input-padrao">
+                    </div>
+                </div>
+
+                <div class="actions-section">
+                    <a href="/meus-pets" class="botao spa-link" style="text-align:center; text-decoration:none; display:inline-block;">
+                        Pets Anunciados
+                    </a>
+                    <a href="/meus-pedidos" class="botao spa-link" style="text-align:center; text-decoration:none; display:inline-block;">
+                        Meus Pedidos
+                    </a>
+                    <button class="botao">Editar</button>
+                    <button class="botao">Salvar</button>
+                    <button class="botao botao-logout">Logout</button>
+                </div>
+            </div>
+        `,
+        init: () => {
+            // Lógica de Upload de Foto (Reaproveitada)
+            const uploadBox = document.querySelector('.perfil-section .photo-upload');
+            const fileInput = document.getElementById('file-input-perfil');
+            
+            if(uploadBox && fileInput) {
+                uploadBox.addEventListener('click', () => {
+                    fileInput.click();
+                });
+                fileInput.addEventListener('change', (e) => {
+                    if (e.target.files && e.target.files[0]) {
+                        alert(`Foto selecionada: ${e.target.files[0].name}`);
+                    }
+                });
+            }
+
+            // Lógica de Logout (Simulação)
+            const btnLogout = document.querySelector('.botao-logout');
+            if (btnLogout) {
+                btnLogout.addEventListener('click', () => {
+                    // Aqui você limparia a sessão do usuário real
+                    alert('Você saiu do sistema.');
+                    // Redireciona para o Login
+                    window.history.pushState({}, "", "/login");
+                    window.route();
+                });
+            }
+        }
     },
     "/cadastro": {
         title: "CRIE SUA CONTA",
@@ -420,6 +529,250 @@ const routes = {
                 });
             }
         }
+    },
+    "/detalhes-pedido": {
+        title: "DETALHES DO PEDIDO",
+        template: `
+            <div class="detalhes-pedido-container">
+                <div class="card-solicitacao">
+                    
+                    <div class="pet-area">
+                        <img src="./img/pet-teste.jpg" alt="Foto do Gato" class="pet-img">
+                        <h3>Will</h3>
+                        <p>Disponível</p>
+                    </div>
+
+                    <div class="interessado-area">
+                        
+                        <div class="interessado-info">
+                            <img src="./img/pessoa-teste.PNG" alt="Foto do Solicitante" class="requester-avatar">
+                            
+                            <div class="interessado-detalhes">
+                                <h4>Michael Corleone</h4>
+                                <p><strong>Data de Nascimento:</strong> 23/03/1999</p>
+                                <p><strong>Telefone:</strong> 11 99582-5234</p>
+                                <p><strong>Endereço:</strong> Rua Italia, 99, Jandira - SP</p>
+                                <p><strong>Email:</strong> corleone@gmail.com</p>
+                            </div>
+                        </div>
+
+                        <div class="botoes-acao">
+                            <button class="botao botao-aceitar">Aceitar</button>
+                            <button class="botao botao-recusar">Recusar</button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        `,
+        init: () => {
+            const btnAceitar = document.querySelector('.botao-aceitar');
+            const btnRecusar = document.querySelector('.botao-recusar');
+
+            if(btnAceitar) {
+                btnAceitar.addEventListener('click', () => {
+                    if(confirm('Deseja aceitar este pedido de adoção?')) {
+                        alert('Pedido aceito com sucesso! Entre em contato com o adotante.');
+                    }
+                });
+            }
+
+            if(btnRecusar) {
+                btnRecusar.addEventListener('click', () => {
+                    if(confirm('Tem certeza que deseja recusar este pedido?')) {
+                        alert('Pedido recusado.');
+                        // Opcional: voltar para notificações
+                        window.history.pushState({}, "", "/notificacoes");
+                        window.route();
+                    }
+                });
+            }
+        }
+    },
+    "/pet": {
+        title: "DETALHES DO PET",
+        template: `
+            <div class="detalhes-pet-container">
+
+                <div class="pet-card">
+                    <div class="pet-header">
+                        <div class="pet-image">
+                            <img src="./img/pet-teste.jpg" alt="Will - Gato para adoção">
+                        </div>
+                        <div class="pet-info">
+                            <h1 class="pet-nome">Will</h1>
+                            <div class="pet-detalhes">
+                                <p><strong>Espécie:</strong> Gato</p>
+                                <p><strong>Raça:</strong> Sem Informação</p>
+                                <p><strong>Porte:</strong> Médio</p>
+                                <p><strong>Idade:</strong> Adulto</p>
+                                <p><strong>Sexo:</strong> Macho</p>
+                                <p><strong>Castrado:</strong> Sem Informação</p>
+                                <p><strong>Status:</strong> Disponível</p>
+                                <p><strong>Responsável:</strong> Victor</p>
+                                <p><strong>Localização:</strong> São Paulo - SP</p>
+                                <p><strong>Telefone:</strong> 11 99447-6842</p>
+                                <p><strong>Email:</strong> vitchugo@gmail.com</p>
+                            </div>
+                            <button class="botao-adote">ADOTE</button>
+                        </div>
+                        <button class="botao-favorito">
+                            <i class="bi bi-heart"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="info-card descricao-card">
+                    <h2>Descrição</h2>
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce varius eros quis nisi fermentum, sed
+                        placerat arcu dignissim. Lorem ipsum has been the industry's standard dummy text ever since the 1500s.
+                    </p>
+                </div>
+
+                <div class="bottom-cards">
+                    
+                    <div class="info-card expandable-card">
+                        <div class="card-header">
+                            <h2>Temperamento</h2>
+                            <i class="bi bi-chevron-down chevron-icon"></i>
+                        </div>
+                        <div class="card-conteudo">
+                            <p>Super dócil e brincalhão. Gosta de dormir no sofá e brincar com bolinhas de papel.</p>
+                        </div>
+                    </div>
+
+                    <div class="info-card expandable-card">
+                        <div class="card-header">
+                            <h2>Informações Veterinárias</h2>
+                            <i class="bi bi-chevron-down chevron-icon"></i>
+                        </div>
+                        <div class="card-conteudo">
+                            <p>Vacinas V4 e Antirrábica em dia. Vermifugado recentemente. Teste de FIV/FELV negativo.</p>
+                        </div>
+                    </div>
+
+                    <div class="info-card expandable-card">
+                        <div class="card-header">
+                            <h2>Adaptabilidade</h2>
+                            <i class="bi bi-chevron-down chevron-icon"></i>
+                        </div>
+                        <div class="card-conteudo">
+                            <p>Convive bem com outros gatos e cães de porte pequeno. Gosta de crianças respeitosas.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        `,
+        init: () => {
+            // 1. Lógica do botão Favoritar
+            const btnFavContainer = document.querySelector('.botao-favorito');
+            if(btnFavContainer) {
+                const btnFav = btnFavContainer.querySelector('i');
+                btnFavContainer.addEventListener('click', () => {
+                    if(btnFav.classList.contains('bi-heart')) {
+                        btnFav.classList.remove('bi-heart');
+                        btnFav.classList.add('bi-heart-fill');
+                        btnFav.style.color = 'red';
+                    } else {
+                        btnFav.classList.remove('bi-heart-fill');
+                        btnFav.classList.add('bi-heart');
+                        btnFav.style.color = '#0475A8';
+                    }
+                });
+            }
+
+            // 2. Lógica do botão Adote
+            const btnAdote = document.querySelector('.botao-adote');
+            if(btnAdote) {
+                btnAdote.addEventListener('click', () => {
+                    alert('Interesse registrado! O responsável entrará em contato.');
+                });
+            }
+
+            // 3. Lógica do Accordion (Animação Individual)
+            // Selecionamos todos os elementos que têm a classe .expandable-card
+            const accordions = document.querySelectorAll('.expandable-card');
+
+            accordions.forEach(acc => {
+                // Dentro deste loop, 'acc' é UM card específico.
+                // Buscamos o header e o conteudo APENAS dentro deste card.
+                const header = acc.querySelector('.card-header');
+                const content = acc.querySelector('.card-conteudo');
+
+                if (header && content) {
+                    header.addEventListener('click', (e) => {
+                        e.stopPropagation(); // Evita conflitos de clique
+
+                        // Alterna a classe active apenas neste card
+                        acc.classList.toggle('active');
+
+                        // Se ficou ativo, calcula a altura e abre
+                        if (acc.classList.contains('active')) {
+                            content.style.maxHeight = content.scrollHeight + "px";
+                            content.style.marginTop = "15px";
+                            content.style.opacity = "1";
+                        } else {
+                            // Se fechou, zera a altura
+                            content.style.maxHeight = null;
+                            content.style.marginTop = "0";
+                            content.style.opacity = "0";
+                        }
+                    });
+                }
+            });
+        }
+    },
+    "/meus-pets": {
+        title: "MEUS PETS",
+        template: `
+            <div class="meus-pets-container">
+                <section class="cards">
+                    
+                    <div class="card" onclick="window.history.pushState({}, '', '/pet'); window.route();">
+                        <img src="./img/pet-teste.jpg" alt="Pet">
+                        <h3>Thor</h3>
+                        <p>Disponível</p>
+                    </div>
+
+                    <div class="card" onclick="window.history.pushState({}, '', '/pet'); window.route();">
+                        <img src="./img/pet-teste.jpg" alt="Pet">
+                        <h3>Mel</h3>
+                        <p>Disponível</p>
+                    </div>
+
+                    <div class="card" onclick="window.history.pushState({}, '', '/pet'); window.route();">
+                        <img src="./img/pet-teste.jpg" alt="Pet">
+                        <h3>Bob</h3>
+                        <p>Disponível</p>
+                    </div>
+
+                </section>
+            </div>
+        `
+    },
+    "/meus-pedidos": {
+        title: "MEUS PEDIDOS",
+        template: `
+            <div class="meus-pedidos-container">
+                <section class="cards">
+
+                    <div class="card" onclick="window.history.pushState({}, '', '/pet'); window.route();">
+                        <img src="./img/pet-teste.jpg" alt="Pet">
+                        <h3>Luna</h3>
+                        <p style="color: orange;">Aguardando</p> </div>
+
+                    <div class="card" onclick="window.history.pushState({}, '', '/pet'); window.route();">
+                        <img src="./img/pet-teste.jpg" alt="Pet">
+                        <h3>Max</h3>
+                        <p style="color: green;">Aprovado</p>
+                    </div>
+
+                </section>
+            </div>
+        `
     },
     404: {
         title: "Página não encontrada",
