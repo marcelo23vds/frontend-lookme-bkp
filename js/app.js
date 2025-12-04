@@ -667,11 +667,12 @@ const routes = {
             </div>
         `,
         init: () => {
-            // 1. Lógica do botão Favoritar
+            // 1. Lógica do botão Favoritar (Mantida)
             const btnFavContainer = document.querySelector('.botao-favorito');
             if(btnFavContainer) {
                 const btnFav = btnFavContainer.querySelector('i');
-                btnFavContainer.addEventListener('click', () => {
+                btnFavContainer.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Previne comportamentos estranhos
                     if(btnFav.classList.contains('bi-heart')) {
                         btnFav.classList.remove('bi-heart');
                         btnFav.classList.add('bi-heart-fill');
@@ -684,7 +685,7 @@ const routes = {
                 });
             }
 
-            // 2. Lógica do botão Adote
+            // 2. Lógica do botão Adote (Mantida)
             const btnAdote = document.querySelector('.botao-adote');
             if(btnAdote) {
                 btnAdote.addEventListener('click', () => {
@@ -692,36 +693,36 @@ const routes = {
                 });
             }
 
-            // 3. Lógica do Accordion (Animação Individual)
-            // Selecionamos todos os elementos que têm a classe .expandable-card
-            const accordions = document.querySelectorAll('.expandable-card');
+            // 3. Lógica do Accordion (CORRIGIDA E BLINDADA)
+            // Selecionamos diretamente os cabeçalhos clicáveis
+            const headers = document.querySelectorAll('.expandable-card .card-header');
 
-            accordions.forEach(acc => {
-                // Dentro deste loop, 'acc' é UM card específico.
-                // Buscamos o header e o conteudo APENAS dentro deste card.
-                const header = acc.querySelector('.card-header');
-                const content = acc.querySelector('.card-conteudo');
+            headers.forEach(header => {
+                // Removemos listeners antigos clonando o nó (segurança extra)
+                const newHeader = header.cloneNode(true);
+                header.parentNode.replaceChild(newHeader, header);
 
-                if (header && content) {
-                    header.addEventListener('click', (e) => {
-                        e.stopPropagation(); // Evita conflitos de clique
+                newHeader.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Impede que o clique se propague
 
-                        // Alterna a classe active apenas neste card
-                        acc.classList.toggle('active');
+                    // A MÁGICA: Encontra o card PAI específico deste cabeçalho clicado
+                    const currentCard = newHeader.closest('.expandable-card');
+                    const currentContent = currentCard.querySelector('.card-conteudo');
 
-                        // Se ficou ativo, calcula a altura e abre
-                        if (acc.classList.contains('active')) {
-                            content.style.maxHeight = content.scrollHeight + "px";
-                            content.style.marginTop = "15px";
-                            content.style.opacity = "1";
-                        } else {
-                            // Se fechou, zera a altura
-                            content.style.maxHeight = null;
-                            content.style.marginTop = "0";
-                            content.style.opacity = "0";
-                        }
-                    });
-                }
+                    // Alterna a classe APENAS neste card
+                    currentCard.classList.toggle('active');
+
+                    // Aplica a animação APENAS neste conteúdo
+                    if (currentCard.classList.contains('active')) {
+                        currentContent.style.maxHeight = currentContent.scrollHeight + "px";
+                        currentContent.style.marginTop = "15px";
+                        currentContent.style.opacity = "1";
+                    } else {
+                        currentContent.style.maxHeight = null;
+                        currentContent.style.marginTop = "0";
+                        currentContent.style.opacity = "0";
+                    }
+                });
             });
         }
     },
