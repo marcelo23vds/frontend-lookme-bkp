@@ -127,8 +127,7 @@ const routes = {
                     
                     // ID na URL
                     card.onclick = () => {
-                        window.history.pushState({}, '', `/pet?id=${pet.animal_id}`); 
-                        window.route();
+                        window.location.hash = `/pet?id=${pet.animal_id}`;
                     };
 
                     card.innerHTML = `
@@ -732,7 +731,8 @@ const routes = {
         `,
         init: async () => {
             //Pega o ID da URL
-            const params = new URLSearchParams(window.location.search);
+            const paramsString = window.location.hash.split('?')[1];
+            const params = new URLSearchParams(paramsString);
             const id = params.get('id');
 
             if (!id) {
@@ -886,54 +886,70 @@ const routes = {
     }
 };
 
-const router = () => {
-    let path = window.location.pathname;
-    if (path === '/index.html') path = '/';
+/* =======================================================
+   SISTEMA DE ROTAS VIA HASH (#)
+   Resolve o erro 404 no GitHub Pages e Live Server
+   ======================================================= */
 
-    const route = routes[path] || routes[404];
+   const router = () => {
+    // Pega o que está depois da #. Se não tiver nada, assume '/'
+    let hash = window.location.hash.slice(1) || '/';
 
-    // insere o html
+    // Separa a rota dos parâmetros (remove o ?id=...) para achar o template
+    const routePath = hash.split('?')[0];
+
+    // Busca a rota ou joga para 404
+    const route = routes[routePath] || routes[404];
+
+    // Injeta o HTML
     document.getElementById('app').innerHTML = route.template;
     
-    // atualiza o Título
+    // Atualiza título
     const pageTitle = document.getElementById('page-title');
     if(pageTitle) pageTitle.innerText = route.title;
 
-    // ocultar Cabeçalho Secundário fora da Home
+    // Controla o cabeçalho secundário
     const cabecalhoSecundario = document.querySelector('.cabecalho-secundario');
     if (cabecalhoSecundario) {
-        if (path === '/') {
-            // Se for Home, mostra (usa o display original do CSS, que é flex)
-            cabecalhoSecundario.style.display = 'flex';
-        } else {
-            // Se for qualquer outra página, esconde
-            cabecalhoSecundario.style.display = 'none';
-        }
+        // Exibe apenas se o hash for exatamente '/' ou vazio
+        cabecalhoSecundario.style.display = (routePath === '/') ? 'flex' : 'none';
     }
 
-    // executa o script específico da página (se houver)
+    // Executa o script da página
     if (route.init) {
         route.init();
     }
 };
 
-// Navegação via links
-document.addEventListener('click', (e) => {
-    // Procura o link mais próximo que tenha a classe spa-link
-    const link = e.target.closest('.spa-link'); 
-    
-    // VERIFICAÇÃO EXTRA: Se for o botão de filtro, NÃO navega
-    if (e.target.closest('.botao-mobile-filter')) return;
+// --- EVENTOS ---
 
-    if (link) {
-        e.preventDefault();
-        window.history.pushState({}, "", link.getAttribute('href'));
+// Detecta quando a URL muda (clique em voltar, avançar ou links)
+window.addEventListener('hashchange', router);
+
+// Ao carregar a página, se não tiver hash, adiciona o #/
+window.addEventListener('load', () => {
+    if (!window.location.hash) {
+        window.location.hash = '/';
+    } else {
         router();
     }
 });
 
-window.onpopstate = router;
-window.route = router;
+// Atualiza o comportamento dos links (.spa-link)
+document.addEventListener('click', (e) => {
+    const link = e.target.closest('.spa-link'); 
+    
+    // Ignora botão de filtro
+    if (e.target.closest('.botao-mobile-filter')) return;
 
-// Inicia o router ao carregar
-router();
+    if (link) {
+        e.preventDefault();
+        // Apenas muda o hash. O evento 'hashchange' fará o resto automaticamente.
+        window.location.hash = link.getAttribute('href'); 
+    }
+});
+
+// Função global para compatibilidade
+window.route = () => {
+    router();
+};
